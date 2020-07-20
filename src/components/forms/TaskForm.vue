@@ -8,10 +8,11 @@
           type="text"
           v-model.trim="taskData.title"
           id="form__title"
+          v-focus
         />
         <p v-if="errors.title" class="form__message">* {{ errors.title }}</p>
       </div>
-      <div class="form__field">
+      <div class="form__field" v-if="!isCreatingList">
         <label for="form__desc">Description</label>
         <textarea
           class="input"
@@ -38,20 +39,28 @@ import { mixin as clickaway } from "vue-clickaway";
 import { ITask } from "@/interfaces/entities";
 
 @Component({
-  mixins: [clickaway]
+  mixins: [clickaway],
+  directives: {
+    focus: {
+      inserted: function(el) {
+        el.focus();
+      }
+    }
+  }
 })
 export default class TaskForm extends Vue {
-  taskData = {
-    title: "",
-    description: ""
-  };
+  taskData: any = {};
   errors = {};
-  currentId = "";
+  isCreatingList = false;
+  routeName: string | null | undefined;
 
   created() {
-    this.currentId = this.$route.params.id;
-    if (this.currentId) {
+    this.routeName = this.$router.currentRoute.name;
+    if (this.routeName === "EditTask") {
       this.taskData = { ...this.taskById };
+    }
+    if (this.routeName === "NewList") {
+      this.isCreatingList = true;
     }
   }
 
@@ -62,7 +71,8 @@ export default class TaskForm extends Vue {
   validate({ title, description }) {
     const errors: any = {};
     if (!title) errors.title = "Title can not be blank";
-    if (!description) errors.description = "Description can not be blank";
+    if (!description && !this.isCreatingList)
+      errors.description = "Description can not be blank";
     return errors;
   }
 
@@ -77,18 +87,21 @@ export default class TaskForm extends Vue {
     this.errors = this.validate(this.taskData);
 
     if (Object.keys(this.errors).length === 0) {
-      if (this.currentId) {
+      if (this.routeName === "EditTask") {
         this.$store.dispatch("tasks/updateTask", this.taskData);
         this.$router.push("/");
-      } else {
+      } else if (this.routeName === "NewTask") {
         this.$store.dispatch("tasks/addTask", this.taskData);
+        this.$router.push("/");
+      } else if (this.routeName === "NewList") {
+        this.$store.dispatch("cardsLists/addList", this.taskData);
         this.$router.push("/");
       }
     }
   }
 
   public get taskById(): ITask {
-    return this.$store.getters["tasks/taskById"](this.currentId);
+    return this.$store.getters["tasks/taskById"](this.$route.params.id);
   }
 }
 </script>

@@ -1,8 +1,6 @@
 <template>
-  <div>
-    <div class="tasks">
-      <TaskItem v-for="task in tasks" :key="task.id" :task="task" />
-    </div>
+  <div class="tasks">
+    <TaskItem v-for="task in tasks" :key="task.id" :task="task" />
   </div>
 </template>
 
@@ -23,6 +21,7 @@ export default class TasksList extends Vue {
 
 <style lang="scss">
 .tasks {
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;

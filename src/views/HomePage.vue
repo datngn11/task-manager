@@ -1,7 +1,17 @@
 <template>
   <div class="container">
     <TopPanel />
-    <TasksList />
+    <!-- <TasksList /> -->
+    <div class="lists">
+      <CardsList
+        v-for="list in lists"
+        :key="list.id"
+        :listId="list.id"
+        :title="list.title"
+        :list="list"
+      />
+    </div>
+
     <router-view :key="$route.params.id" />
     <router-link to="/new" class="btn--add">
       <img src="@/assets/img/icon-add.svg" alt="" />
@@ -10,19 +20,26 @@
 </template>
 
 <script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import TasksList from "@/components/tasks/TasksList.vue";
 import TopPanel from "@/components/panels/TopPanel.vue";
-
-import { Vue, Component } from "vue-property-decorator";
+import CardsList from "@/components/lists/CardsList.vue";
+import { ICardsList } from "@/interfaces/entities";
+import Spinner from "@/components/spinner/Spinner.vue";
 
 @Component({
-  components: { TasksList, TopPanel }
+  components: { TasksList, TopPanel, CardsList, Spinner }
 })
 export default class HomePage extends Vue {
   created() {
     if (!localStorage.currentEmail) {
       this.$router.push("/login");
     }
+    this.$store.dispatch("cardsLists/fetchImg");
+  }
+
+  public get lists(): ICardsList {
+    return this.$store.state.cardsLists.allLists;
   }
 }
 </script>
@@ -39,5 +56,13 @@ export default class HomePage extends Vue {
   &:hover {
     transform: scale(0.9);
   }
+}
+.lists {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 50px;
 }
 </style>

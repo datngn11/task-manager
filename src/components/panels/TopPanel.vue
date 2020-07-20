@@ -3,6 +3,7 @@
     <div class="email">
       <span> {{ currentEmail }} </span>
     </div>
+    <router-link to="/newList" class="add-list-btn">Add list</router-link>
     <span @click="logout" class="logout">Log Out</span>
   </header>
 </template>
@@ -22,9 +23,9 @@ export default class TopPanel extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .header {
-  padding: 15px;
+  padding: 0 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,6 +33,15 @@ export default class TopPanel extends Vue {
   background-color: #fff;
   color: $main-font-color;
 }
+.add-list-btn {
+  text-decoration: none;
+  color: $main-font-color;
+  padding: 15px;
+  &:hover {
+    background: #f1f1f1;
+  }
+}
+
 .logout {
   display: inline-block;
   padding: 5px 15px;

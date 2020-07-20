@@ -5,7 +5,7 @@
         <router-link :to="'/edit/' + task.id" class="task__control-item">
           <img src="@/assets/img/icon-edit.svg" alt="Edit icon" />
         </router-link>
-        <a @click="openPopUp" class="task__control-item">
+        <a @click="openConfirmPopUp" class="task__control-item">
           <img src="@/assets/img/icon-delete.svg" alt="Trash can icon" />
         </a>
       </div>
@@ -19,35 +19,28 @@
     <ConfirmPopUp
       v-if="showPopUp"
       @remove-task="removeTask"
-      @close-popup="hidePopUp"
+      @hide-popup="hideConfirmPopUp"
     >
-      Are you sure you want to delete this task?
+      Are you sure you want to remove this task?
     </ConfirmPopUp>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { ITask } from "@/interfaces/entities";
+import ConfirmPopUpMixin from "@/mixins/ConfirmPopUpMixin.vue";
 import ConfirmPopUp from "@/components/popups/ConfirmPopUp.vue";
 
 @Component({
   components: { ConfirmPopUp }
 })
-export default class TaskItem extends Vue {
+export default class TaskItem extends ConfirmPopUpMixin {
   @Prop() readonly task: ITask;
 
-  showPopUp = false;
-
-  openPopUp() {
-    this.showPopUp = true;
-  }
-  hidePopUp() {
-    this.showPopUp = false;
-  }
   removeTask() {
     this.$store.dispatch("tasks/removeTask", this.task.id);
-    this.hidePopUp;
+    this.hideConfirmPopUp;
   }
 }
 </script>

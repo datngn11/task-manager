@@ -25,6 +25,17 @@ const routes: Array<RouteConfig> = [
         path: "edit/:id",
         name: "EditTask",
         component: () => import("@/components/forms/TaskForm.vue")
+      },
+      {
+        path: "newList",
+        name: "NewList",
+        component: () => import("@/components/forms/TaskForm.vue")
+      },
+      {
+        path: "editCard/:id",
+        name: "EditCard",
+        component: () => import("@/components/lists/CardModal.vue"),
+        props: true
       }
     ]
   }
