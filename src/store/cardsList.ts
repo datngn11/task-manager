@@ -2,6 +2,7 @@ import { ICardsList, ICardsLists, ICardsImg } from "@/interfaces/entities";
 import { GET } from "@/services/network.service";
 import { generate } from "shortid";
 const state: ICardsLists = {
+  isFetching: false,
   allLists: [],
   allCardsImg: []
 };
@@ -39,6 +40,9 @@ const mutations = {
         l.cards = value;
       }
     });
+  },
+  handleFetch(state, value) {
+    state.isFetching = value;
   }
 };
 
@@ -66,13 +70,18 @@ const actions = {
     commit("updateCardsList", payload);
   },
   fetchImg({ commit }) {
-    GET("/cards").then(res => {
-      res.cards.forEach(c => {
-        if (c.imageUrl) {
-          commit("fetchImg", { id: c.id, src: c.imageUrl });
-        }
+    commit("handleFetch", true);
+    GET("/cards")
+      .then(res => {
+        res.cards.forEach(c => {
+          if (c.imageUrl) {
+            commit("fetchImg", { id: c.id, src: c.imageUrl });
+          }
+        });
+      })
+      .finally(() => {
+        commit("handleFetch", false);
       });
-    });
   }
 };
 const getters = {

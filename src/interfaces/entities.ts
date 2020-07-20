@@ -13,6 +13,7 @@ export interface ITask {
 }
 
 export interface ICardsLists {
+  isFetching: boolean;
   allLists: ICardsList[];
   allCardsImg: ICardsImg[];
 }

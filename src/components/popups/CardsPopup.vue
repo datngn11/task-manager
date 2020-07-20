@@ -1,13 +1,16 @@
 <template>
   <div class="popup" @click.stop="$emit('hide-popup')">
     <div class="popup__container" @click.stop="">
-      <div class="img-grid">
+      <div v-if="!isFetching" class="img-grid">
         <img
           v-for="img in imgList"
           :key="img.id"
           :src="img.src"
           @click="saveCard(img)"
         />
+      </div>
+      <div v-else class="popup__spinner">
+        <Spinner />
       </div>
     </div>
   </div>
@@ -16,7 +19,10 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { ICardsImg } from "@/interfaces/entities";
-@Component
+import Spinner from "@/components/spinner/Spinner.vue";
+@Component({
+  components: { Spinner }
+})
 export default class CardsPopup extends Vue {
   saveCard(img) {
     if (this.$route.params.id) {
@@ -29,6 +35,10 @@ export default class CardsPopup extends Vue {
 
   public get imgList(): ICardsImg[] {
     return this.$store.state.cardsLists.allCardsImg;
+  }
+
+  public get isFetching(): boolean {
+    return this.$store.state.cardsLists.isFetching;
   }
 }
 </script>
@@ -56,6 +66,11 @@ export default class CardsPopup extends Vue {
     border-radius: 3px;
     z-index: 15;
     overflow: hidden;
+  }
+
+  &__spinner {
+    display: flex;
+    justify-content: center;
   }
 }
 
