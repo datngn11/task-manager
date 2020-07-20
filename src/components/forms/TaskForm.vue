@@ -16,7 +16,7 @@
         <label for="form__desc">Description</label>
         <textarea
           class="input"
-          rows="10"
+          rows="7"
           id="form__desc"
           v-model.trim="taskData.description"
           @keyup="handleTextarea"
@@ -149,7 +149,7 @@ export default class TaskForm extends Vue {
     width: 100px;
     height: auto;
     @include respond-to(desktop) {
-      width: 80px;
+      width: 75px;
     }
     @include respond-to(tablet) {
       width: 60px;
