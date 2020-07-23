@@ -1,45 +1,41 @@
-import { ITasks, ITask } from "@/interfaces/entities";
-import { tasks as tasksData } from "@/tasks.js";
+import { ITask } from "@/interfaces/entities";
+// import { tasks as tasksData } from "@/tasks.js";
 import { generate } from "shortid";
+import { VuexModule, Module, Action, Mutation } from "vuex-module-decorators";
 
-const state: ITasks = {
-  allTasks: tasksData
-};
+@Module({
+  namespaced: true
+})
+export default class TasksList extends VuexModule {
+  allTasks: ITask[] = [];
 
-const mutations = {
-  removeTask(state: ITasks, id: string) {
-    state.allTasks = state.allTasks.filter(t => t.id != id);
-  },
-  addTask(state: ITasks, task: ITask) {
-    state.allTasks.push(task);
-  },
-  updateTask(state: ITasks, task: ITask) {
-    state.allTasks = state.allTasks.map(t => (t.id === task.id ? task : t));
+  @Mutation
+  ADD_TASK(task: ITask) {
+    this.allTasks.push(task);
   }
-};
-
-const actions = {
-  removeTask({ commit }, id: string) {
-    commit("removeTask", id);
-  },
-  addTask({ commit }, task: ITask) {
-    commit("addTask", { ...task, id: generate() });
-  },
-  updateTask({ commit }, task: ITask) {
-    commit("updateTask", task);
+  @Mutation
+  REMOVE_TASK(id: string) {
+    this.allTasks = this.allTasks.filter(t => t.id != id);
   }
-};
-
-const getters = {
-  taskById: (state: ITasks) => (id: string) => {
-    return state.allTasks.find((t: ITask) => t.id === id);
+  @Mutation
+  UPDATE_TASK(task: ITask) {
+    this.allTasks = this.allTasks.map(t => (t.id === task.id ? task : t));
   }
-};
 
-export const tasks = {
-  namespaced: true,
-  state,
-  mutations,
-  actions,
-  getters
-};
+  @Action({ commit: "ADD_TASK" })
+  addTask(task: ITask) {
+    return { ...task, id: generate() };
+  }
+  @Action({ commit: "REMOVE_TASK" })
+  removeTask(id: string) {
+    return id;
+  }
+  @Action({ commit: "UPDATE_TASK" })
+  updateTask(task: ITask) {
+    return task;
+  }
+
+  get taskById() {
+    return (id: string) => this.allTasks.find((t: ITask) => t.id === id);
+  }
+}
