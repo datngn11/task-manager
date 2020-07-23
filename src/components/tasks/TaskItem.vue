@@ -28,19 +28,24 @@
 
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import { ITask } from "@/interfaces/entities";
 import ConfirmPopUpMixin from "@/mixins/ConfirmPopUpMixin.vue";
 import ConfirmPopUp from "@/components/popups/ConfirmPopUp.vue";
+
+const tasksModule = namespace("tasks");
 
 @Component({
   components: { ConfirmPopUp }
 })
 export default class TaskItem extends ConfirmPopUpMixin {
-  @Prop() readonly task: ITask;
+  @tasksModule.Action("removeTask") actionRemoveTask;
+  @Prop()
+  readonly task: ITask;
 
   removeTask() {
-    this.$store.dispatch("tasks/removeTask", this.task.id);
-    this.hideConfirmPopUp;
+    this.actionRemoveTask(this.task.id);
+    this.hideConfirmPopUp();
   }
 }
 </script>

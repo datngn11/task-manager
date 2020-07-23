@@ -18,12 +18,18 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { ICardsImg } from "@/interfaces/entities";
+import { namespace } from "vuex-class";
 import Spinner from "@/components/spinner/Spinner.vue";
+
+const cardsModule = namespace("cards");
+
 @Component({
   components: { Spinner }
 })
 export default class CardsPopup extends Vue {
+  @cardsModule.Getter("imgList") imgList;
+  @cardsModule.State("isFetching") stateIsFetchingCards;
+
   saveCard(img) {
     if (this.$route.params.id) {
       this.$emit("edit-card", img.src);
@@ -33,12 +39,8 @@ export default class CardsPopup extends Vue {
     }
   }
 
-  public get imgList(): ICardsImg[] {
-    return this.$store.state.cardsLists.allCardsImg;
-  }
-
   public get isFetching(): boolean {
-    return this.$store.state.cardsLists.isFetching;
+    return this.stateIsFetchingCards;
   }
 }
 </script>

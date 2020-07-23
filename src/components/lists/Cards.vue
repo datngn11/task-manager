@@ -1,5 +1,5 @@
 <template>
-  <draggable v-model="cardsById" group="cards" class="container">
+  <draggable v-model="cardsByListId" group="cards" class="container">
     <router-link
       :to="{
         name: 'EditCard',
@@ -16,20 +16,26 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import { ICard } from "@/interfaces/entities";
 import draggable from "vuedraggable";
+
+const cardsModule = namespace("cards");
+
 @Component({
   components: { draggable }
 })
 export default class Cards extends Vue {
+  @cardsModule.Getter("cardsByListId") getCardsByListId;
+  @cardsModule.Action("updateCardsList") actionUpdateCardsList;
   @Prop() readonly listId: string;
   @Prop() readonly cards: ICard[];
 
-  public get cardsById(): string {
-    return this.$store.getters["cardsLists/cardsListById"](this.listId);
+  public get cardsByListId(): string {
+    return this.getCardsByListId(this.listId);
   }
-  public set cardsById(value) {
-    this.$store.dispatch("cardsLists/updateCardsList", {
+  public set cardsByListId(value) {
+    this.actionUpdateCardsList({
       value,
       listId: this.listId
     });

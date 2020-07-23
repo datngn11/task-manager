@@ -10,15 +10,21 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { Action } from "vuex-class";
 
 @Component
 export default class TopPanel extends Vue {
-  currentEmail = localStorage.currentEmail;
+  @Action("removeEmail") actionRemoveEmail;
 
+  currentEmail = "";
+
+  created() {
+    this.currentEmail = localStorage.currentEmail;
+  }
   logout() {
     delete localStorage.currentEmail;
     this.$router.push("/login");
-    this.$store.dispatch("removeEmail");
+    this.actionRemoveEmail();
   }
 }
 </script>

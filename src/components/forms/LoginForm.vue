@@ -20,9 +20,11 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { Action } from "vuex-class";
 
 @Component
 export default class LoginForm extends Vue {
+  @Action("setEmail") actionSetEmail;
   errors = {};
   inputText = "";
 
@@ -38,7 +40,7 @@ export default class LoginForm extends Vue {
     this.errors = this.validate(this.inputText);
 
     if (Object.keys(this.errors).length === 0) {
-      this.$store.dispatch("setEmail", this.inputText);
+      this.actionSetEmail(this.inputText);
       localStorage.setItem("currentEmail", this.inputText);
       this.$router.push("/");
     }

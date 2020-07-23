@@ -37,6 +37,10 @@
 import { Vue, Component } from "vue-property-decorator";
 import { mixin as clickaway } from "vue-clickaway";
 import { ITask } from "@/interfaces/entities";
+import { namespace } from "vuex-class";
+
+const cardsModule = namespace("cards");
+const tasksModule = namespace("tasks");
 
 @Component({
   mixins: [clickaway],
@@ -49,6 +53,11 @@ import { ITask } from "@/interfaces/entities";
   }
 })
 export default class TaskForm extends Vue {
+  @cardsModule.Action("addList") actionAddList;
+  @tasksModule.Action("addTask") actionAddTask;
+  @tasksModule.Action("updateTask") actionUpdateTask;
+  @tasksModule.Getter("taskById") getterTaskById;
+
   taskData: any = {};
   errors = {};
   isCreatingList = false;
@@ -88,20 +97,20 @@ export default class TaskForm extends Vue {
 
     if (Object.keys(this.errors).length === 0) {
       if (this.routeName === "EditTask") {
-        this.$store.dispatch("tasks/updateTask", this.taskData);
+        this.actionUpdateTask(this.taskData);
         this.$router.push("/");
       } else if (this.routeName === "NewTask") {
-        this.$store.dispatch("tasks/addTask", this.taskData);
+        this.actionAddTask(this.taskData);
         this.$router.push("/");
       } else if (this.routeName === "NewList") {
-        this.$store.dispatch("cardsLists/addList", this.taskData);
+        this.actionAddList(this.taskData);
         this.$router.push("/");
       }
     }
   }
 
   public get taskById(): ITask {
-    return this.$store.getters["tasks/taskById"](this.$route.params.id);
+    return this.getterTaskById(this.$route.params.id);
   }
 }
 </script>

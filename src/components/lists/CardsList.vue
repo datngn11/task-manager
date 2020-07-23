@@ -17,10 +17,13 @@
 
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import CardPopUpMixin from "@/mixins/CardPopUpMixin.vue";
 import { ICardsList } from "@/interfaces/entities";
 import Cards from "./Cards.vue";
 import CardsPopup from "../popups/CardsPopup.vue";
+
+const cardsModule = namespace("cards");
 
 @Component({
   components: { CardsPopup, Cards },
@@ -33,13 +36,14 @@ import CardsPopup from "../popups/CardsPopup.vue";
   }
 })
 export default class CardsList extends CardPopUpMixin {
+  @cardsModule.Action("addCard") actionAddCard;
   @Prop() list: ICardsList[];
   @Prop() title: string;
   @Prop() listId: string;
   listTitle: string;
 
   addCard(id: string, src: string) {
-    this.$store.dispatch("cardsLists/addCard", {
+    this.actionAddCard({
       id,
       src,
       listId: this.listId

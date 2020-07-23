@@ -1,9 +1,9 @@
-import { cardsLists } from "./cardsList";
-import { IRootState } from "./../interfaces/entities";
 import Vue from "vue";
 import Vuex from "vuex";
+import { IRootState } from "./../interfaces/entities";
 
-import { tasks } from "./tasks";
+import TasksList from "./tasks";
+import CardsList from "./cards";
 
 Vue.use(Vuex);
 
@@ -14,25 +14,25 @@ const state: IRootState = {
 export const store = new Vuex.Store({
   state,
   mutations: {
-    setEmail(state, email: string) {
+    SET_EMAIL(state, email: string) {
       state.email = email;
     },
-    removeEmail(state) {
+    REMOVE_EMAIL(state) {
       state.email = "";
     }
   },
   actions: {
     setEmail({ commit }, email: string) {
-      commit("setEmail", email);
+      commit("SET_EMAIL", email);
     },
     removeEmail({ commit }) {
-      commit("removeEmail");
+      commit("REMOVE_EMAIL");
     }
   },
   getters: {},
   modules: {
-    tasks,
-    cardsLists
+    tasks: TasksList,
+    cards: CardsList
   },
   strict: true
 });

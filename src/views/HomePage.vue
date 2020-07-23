@@ -11,7 +11,6 @@
         :list="list"
       />
     </div>
-
     <router-view :key="$route.params.id" />
     <router-link to="/new" class="btn--add">
       <img src="@/assets/img/icon-add.svg" alt="" />
@@ -21,25 +20,31 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import TasksList from "@/components/tasks/TasksList.vue";
 import TopPanel from "@/components/panels/TopPanel.vue";
 import CardsList from "@/components/lists/CardsList.vue";
 import { ICardsList } from "@/interfaces/entities";
 import Spinner from "@/components/spinner/Spinner.vue";
 
+const cardsModule = namespace("cards");
+
 @Component({
   components: { TasksList, TopPanel, CardsList, Spinner }
 })
 export default class HomePage extends Vue {
+  @cardsModule.Action("fetchImg") actionFetchImg;
+  @cardsModule.Getter("lists") getterLists;
+
   created() {
     if (!localStorage.currentEmail) {
       this.$router.push("/login");
     }
-    this.$store.dispatch("cardsLists/fetchImg");
+    this.actionFetchImg();
   }
 
   public get lists(): ICardsList {
-    return this.$store.state.cardsLists.allLists;
+    return this.getterLists;
   }
 }
 </script>

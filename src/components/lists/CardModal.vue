@@ -37,11 +37,14 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins } from "vue-property-decorator";
+import { namespace } from "vuex-class";
 import { ICard } from "../../interfaces/entities";
 import CardPopUpMixin from "@/mixins/CardPopUpMixin.vue";
 import ConfirmPopUpMixin from "@/mixins/ConfirmPopUpMixin.vue";
 import ConfirmPopUp from "@/components/popups/ConfirmPopUp.vue";
 import CardsPopup from "../popups/CardsPopup.vue";
+
+const cardsModule = namespace("cards");
 
 @Component({
   components: { ConfirmPopUp, CardsPopup }
@@ -50,6 +53,8 @@ export default class CardModal extends Mixins(
   CardPopUpMixin,
   ConfirmPopUpMixin
 ) {
+  @cardsModule.Action("removeCard") actionRemoveCard;
+  @cardsModule.Action("updateCard") actionUpdateCard;
   @Prop() readonly card!: ICard;
   @Prop() readonly listId!: string;
   currentCard: ICard;
@@ -63,7 +68,7 @@ export default class CardModal extends Mixins(
   }
 
   removeCard() {
-    this.$store.dispatch("cardsLists/removeCard", {
+    this.actionRemoveCard({
       id: this.card.id,
       listId: this.listId
     });
@@ -73,8 +78,9 @@ export default class CardModal extends Mixins(
   editCard(src) {
     this.currentCard = { ...this.currentCard, src };
   }
+
   updateCard() {
-    this.$store.dispatch("cardsLists/updateCard", {
+    this.actionUpdateCard({
       card: this.currentCard,
       listId: this.listId
     });
