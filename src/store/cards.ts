@@ -55,7 +55,7 @@ export default class CardsList extends VuexModule {
   FETCH_IMG(res: any) {
     res.cards.forEach(c => {
       if (c.imageUrl) {
-        this.allCardsImg.push({ id: c.id, src: c.imageUrl });
+        this.allCardsImg.push({ id: generate(), src: c.imageUrl });
       }
     });
   }

@@ -2,7 +2,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { IRootState } from "./../interfaces/entities";
 
-import TasksList from "./tasks";
 import CardsList from "./cards";
 
 Vue.use(Vuex);
@@ -31,7 +30,6 @@ export const store = new Vuex.Store({
   },
   getters: {},
   modules: {
-    tasks: TasksList,
     cards: CardsList
   },
   strict: true

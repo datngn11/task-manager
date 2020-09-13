@@ -17,19 +17,9 @@ const routes: Array<RouteConfig> = [
     component: HomePage,
     children: [
       {
-        path: "new",
-        name: "NewTask",
-        component: () => import("@/components/forms/TaskForm.vue")
-      },
-      {
-        path: "edit/:id",
-        name: "EditTask",
-        component: () => import("@/components/forms/TaskForm.vue")
-      },
-      {
         path: "newList",
         name: "NewList",
-        component: () => import("@/components/forms/TaskForm.vue")
+        component: () => import("@/components/forms/CardsForm.vue")
       },
       {
         path: "editCard/:id",

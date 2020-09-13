@@ -1,29 +1,21 @@
 <template>
   <div class="container">
-    <form class="form" @submit.prevent="handleSubmit" v-on-clickaway="hideForm">
+    <form
+      class="form"
+      @submit.prevent="handleSubmit"
+      v-on-clickaway="hideForm"
+      autocomplete="off"
+    >
       <div class="form__field">
         <label for="form__title">Title</label>
         <input
           class="input"
           type="text"
-          v-model.trim="taskData.title"
+          v-model.trim="cardData.title"
           id="form__title"
           v-focus
         />
         <p v-if="errors.title" class="form__message">* {{ errors.title }}</p>
-      </div>
-      <div class="form__field" v-if="!isCreatingList">
-        <label for="form__desc">Description</label>
-        <textarea
-          class="input"
-          rows="7"
-          id="form__desc"
-          v-model.trim="taskData.description"
-          @keyup="handleTextarea"
-        />
-        <p v-if="errors.description" class="form__message">
-          * {{ errors.description }}
-        </p>
       </div>
       <button type="submit" class="btn btn--submit">Submit</button>
       <span @click="hideForm" class="btn--close">
@@ -36,11 +28,9 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mixin as clickaway } from "vue-clickaway";
-import { ITask } from "@/interfaces/entities";
 import { namespace } from "vuex-class";
 
 const cardsModule = namespace("cards");
-const tasksModule = namespace("tasks");
 
 @Component({
   mixins: [clickaway],
@@ -54,34 +44,19 @@ const tasksModule = namespace("tasks");
 })
 export default class TaskForm extends Vue {
   @cardsModule.Action("addList") actionAddList;
-  @tasksModule.Action("addTask") actionAddTask;
-  @tasksModule.Action("updateTask") actionUpdateTask;
-  @tasksModule.Getter("taskById") getterTaskById;
 
-  taskData: any = {};
+  cardData: any = {};
   errors = {};
-  isCreatingList = false;
   routeName: string | null | undefined;
-
-  created() {
-    this.routeName = this.$router.currentRoute.name;
-    if (this.routeName === "EditTask") {
-      this.taskData = { ...this.taskById };
-    }
-    if (this.routeName === "NewList") {
-      this.isCreatingList = true;
-    }
-  }
 
   hideForm() {
     this.$router.push("/");
   }
 
-  validate({ title, description }) {
+  validate({ title }) {
     const errors: any = {};
     if (!title) errors.title = "Title can not be blank";
-    if (!description && !this.isCreatingList)
-      errors.description = "Description can not be blank";
+
     return errors;
   }
 
@@ -93,24 +68,12 @@ export default class TaskForm extends Vue {
   }
 
   handleSubmit() {
-    this.errors = this.validate(this.taskData);
+    this.errors = this.validate(this.cardData);
 
     if (Object.keys(this.errors).length === 0) {
-      if (this.routeName === "EditTask") {
-        this.actionUpdateTask(this.taskData);
-        this.$router.push("/");
-      } else if (this.routeName === "NewTask") {
-        this.actionAddTask(this.taskData);
-        this.$router.push("/");
-      } else if (this.routeName === "NewList") {
-        this.actionAddList(this.taskData);
-        this.$router.push("/");
-      }
+      this.actionAddList(this.cardData);
+      this.$router.push("/");
     }
-  }
-
-  public get taskById(): ITask {
-    return this.getterTaskById(this.$route.params.id);
   }
 }
 </script>
