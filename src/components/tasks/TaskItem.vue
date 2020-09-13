@@ -2,7 +2,7 @@
   <div class="task">
     <div class="task__header">
       <div class="task__control">
-        <router-link :to="'/edit/' + task.id" class="task__control-item">
+        <router-link :to="'/edit/' + task._id" class="task__control-item">
           <img src="@/assets/img/icon-edit.svg" alt="Edit icon" />
         </router-link>
         <a @click="openConfirmPopUp" class="task__control-item">
@@ -17,7 +17,7 @@
       <p class="task__desc">{{ task.description }}</p>
     </div>
     <ConfirmPopUp
-      v-if="showPopUp"
+      v-if="showConfirmPopUp"
       @remove-task="removeTask"
       @hide-popup="hideConfirmPopUp"
     >
@@ -40,11 +40,10 @@ const tasksModule = namespace("tasks");
 })
 export default class TaskItem extends ConfirmPopUpMixin {
   @tasksModule.Action("removeTask") actionRemoveTask;
-  @Prop()
-  readonly task: ITask;
+  @Prop() readonly task: ITask;
 
   removeTask() {
-    this.actionRemoveTask(this.task.id);
+    this.actionRemoveTask(this.task._id);
     this.hideConfirmPopUp();
   }
 }

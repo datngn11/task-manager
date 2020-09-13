@@ -3,7 +3,6 @@
     <div class="email">
       <span> {{ currentEmail }} </span>
     </div>
-    <router-link to="/newList" class="add-list-btn">Add list</router-link>
     <span @click="logout" class="logout">Log Out</span>
   </header>
 </template>
@@ -31,7 +30,7 @@ export default class TopPanel extends Vue {
 
 <style lang="scss" scoped>
 .header {
-  padding: 0 15px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;

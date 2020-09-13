@@ -5,7 +5,7 @@ class NetworkService {
 
   public static init() {
     NetworkService.api = axios.create({
-      baseURL: "https://api.magicthegathering.io/v1"
+      baseURL: "https://raysael.herokuapp.com/"
     });
   }
 
@@ -14,6 +14,7 @@ class NetworkService {
 
     switch (status) {
       case 200:
+      case 201:
         return data;
       case 401:
       case 403:
@@ -30,11 +31,42 @@ class NetworkService {
     const result = await NetworkService.requestHandler(request);
     return result;
   }
+
+  public static async post(
+    url: string,
+    data: any,
+    options?: AxiosRequestConfig
+  ): Promise<any> {
+    const request = () => NetworkService.api.post(url, data, options);
+    const result = await NetworkService.requestHandler(request);
+    return result;
+  }
+
+  public static async patch(
+    url: string,
+    options?: AxiosRequestConfig
+  ): Promise<any> {
+    const request = () => NetworkService.api.patch(url, options);
+    const result = await NetworkService.requestHandler(request);
+    return result;
+  }
+
+  public static async delete(
+    url: string,
+    options?: AxiosRequestConfig
+  ): Promise<any> {
+    const request = () => NetworkService.api.delete(url, options);
+    const result = await NetworkService.requestHandler(request);
+    return result;
+  }
 }
 
 NetworkService.init();
 
 const GET = NetworkService.get;
+const POST = NetworkService.post;
+const DELETE = NetworkService.delete;
+const PATCH = NetworkService.patch;
 
-export { GET };
+export { GET, POST, DELETE, PATCH };
 export default NetworkService;

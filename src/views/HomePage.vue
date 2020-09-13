@@ -1,15 +1,9 @@
 <template>
   <div class="container">
     <TopPanel />
-    <!-- <TasksList /> -->
-    <div class="lists">
-      <CardsList
-        v-for="list in lists"
-        :key="list.id"
-        :listId="list.id"
-        :title="list.title"
-        :list="list"
-      />
+    <TasksList v-if="!isFetching" />
+    <div v-else class="spinner">
+      <Spinner />
     </div>
     <router-view :key="$route.params.id" />
     <router-link to="/new" class="btn--add">
@@ -20,36 +14,38 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+import { Action, namespace } from "vuex-class";
+
 import TasksList from "@/components/tasks/TasksList.vue";
 import TopPanel from "@/components/panels/TopPanel.vue";
-import CardsList from "@/components/lists/CardsList.vue";
-import { ICardsList } from "@/interfaces/entities";
 import Spinner from "@/components/spinner/Spinner.vue";
 
-const cardsModule = namespace("cards");
+const tasksModule = namespace("tasks");
 
 @Component({
-  components: { TasksList, TopPanel, CardsList, Spinner }
+  components: { TasksList, TopPanel, Spinner }
 })
 export default class HomePage extends Vue {
-  @cardsModule.Action("fetchImg") actionFetchImg;
-  @cardsModule.Getter("lists") getterLists;
+  @tasksModule.Action("fetchTasks") actionFetchTasks;
+  @tasksModule.State("isFetching") stateIsFetchingTasks;
+  @Action("setEmail") actionSetEmail;
 
   created() {
     if (!localStorage.currentEmail) {
       this.$router.push("/login");
+    } else {
+      this.actionSetEmail(localStorage.currentEmail);
+      this.actionFetchTasks();
     }
-    this.actionFetchImg();
   }
 
-  public get lists(): ICardsList {
-    return this.getterLists;
+  public get isFetching(): boolean {
+    return this.stateIsFetchingTasks;
   }
 }
 </script>
 
-<style lang="scss" scopedSlot>
+<style lang="scss" scoped>
 .btn--add {
   display: inline-block;
   position: fixed;
@@ -69,5 +65,13 @@ export default class HomePage extends Vue {
   flex-wrap: wrap;
   justify-content: flex-start;
   padding: 50px;
+}
+.spinner {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  transform: translateX(50%);
 }
 </style>

@@ -12,7 +12,7 @@
         />
         <p v-if="errors.title" class="form__message">* {{ errors.title }}</p>
       </div>
-      <div class="form__field" v-if="!isCreatingList">
+      <div class="form__field">
         <label for="form__desc">Description</label>
         <textarea
           class="input"
@@ -35,11 +35,10 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { mixin as clickaway } from "vue-clickaway";
-import { ITask } from "@/interfaces/entities";
 import { namespace } from "vuex-class";
+import { ITask } from "@/interfaces/entities";
+import { mixin as clickaway } from "vue-clickaway";
 
-const cardsModule = namespace("cards");
 const tasksModule = namespace("tasks");
 
 @Component({
@@ -53,23 +52,18 @@ const tasksModule = namespace("tasks");
   }
 })
 export default class TaskForm extends Vue {
-  @cardsModule.Action("addList") actionAddList;
   @tasksModule.Action("addTask") actionAddTask;
   @tasksModule.Action("updateTask") actionUpdateTask;
   @tasksModule.Getter("taskById") getterTaskById;
 
   taskData: any = {};
   errors = {};
-  isCreatingList = false;
   routeName: string | null | undefined;
 
   created() {
     this.routeName = this.$router.currentRoute.name;
     if (this.routeName === "EditTask") {
       this.taskData = { ...this.taskById };
-    }
-    if (this.routeName === "NewList") {
-      this.isCreatingList = true;
     }
   }
 
@@ -80,8 +74,7 @@ export default class TaskForm extends Vue {
   validate({ title, description }) {
     const errors: any = {};
     if (!title) errors.title = "Title can not be blank";
-    if (!description && !this.isCreatingList)
-      errors.description = "Description can not be blank";
+    if (!description) errors.description = "Description can not be blank";
     return errors;
   }
 
@@ -101,9 +94,6 @@ export default class TaskForm extends Vue {
         this.$router.push("/");
       } else if (this.routeName === "NewTask") {
         this.actionAddTask(this.taskData);
-        this.$router.push("/");
-      } else if (this.routeName === "NewList") {
-        this.actionAddList(this.taskData);
         this.$router.push("/");
       }
     }

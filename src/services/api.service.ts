@@ -1,11 +1,12 @@
 import NetworkService from "./network.service";
-import CardsApiService from "./api/cards";
+
+import TasksApiService from "./api/tasks";
 import { use } from "typescript-mix";
 
-interface ApiService extends NetworkService, CardsApiService {}
+interface ApiService extends NetworkService, TasksApiService {}
 
 class ApiService {
-  @use(CardsApiService) this!: ApiService;
+  @use(TasksApiService) this!: ApiService;
 }
 
 const apiService = new ApiService();
