@@ -3,7 +3,7 @@
     <router-link
       :to="{
         name: 'EditCard',
-        params: { card: card, id: card.id, listId: listId }
+        params: { card: card, listId: listId }
       }"
       v-for="(card, index) in cards"
       :key="index"

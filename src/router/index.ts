@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import HomePage from "@/views/HomePage.vue";
-import LoginPage from "@/views/LoginPage.vue";
+import HomePage from "@/pages/HomePage.vue";
+import LoginPage from "@/pages/LoginPage.vue";
 
 Vue.use(VueRouter);
 
